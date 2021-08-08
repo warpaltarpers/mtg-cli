@@ -68,6 +68,13 @@ def fuzzyCard():
     
     cardPrintout(data['uri'])
     
+# Returns a random card
+def randomCard():
+    searchURL = f"{url}cards/random"
+    jsonURL = urllib.request.urlopen(searchURL)
+    data = json.loads(jsonURL.read())
+    cardPrintout(data['uri'])
+    
 # Prints out card name, mana cost, type, text, and (if applicable) power and toughness
 def cardPrintout(cardURI):
     jsonURL = urllib.request.urlopen(cardURI)

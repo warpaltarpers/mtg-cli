@@ -75,23 +75,9 @@ def cardPrintout(cardURI):
     hasPower = bool(data.get('power'))
     
     if hasPower:
-        cardData = {
-            "name": f"{data['name']}",
-            "mana_cost": f"{data['mana_cost']}",
-            "type_line": f"{data['type_line']}",
-            "oracle_text": f"{data['oracle_text']}",
-            "power": f"{data['power']}",
-            "toughness": f"{data['toughness']}",
-        }
-        rprint(f"\n[b]{cardData['name']}[/b] | {cardData['mana_cost']} | {cardData['power']}/{cardData['toughness']}\n[u]{cardData['type_line']}[/u]\n{cardData['oracle_text']}\n".replace("{T}", "{Tap}"))
+        rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']} | {data['power']}/{data['toughness']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
     else:
-        cardData = {
-            "name": f"{data['name']}",
-            "mana_cost": f"{data['mana_cost']}",
-            "type_line": f"{data['type_line']}",
-            "oracle_text": f"{data['oracle_text']}",
-        }
-        rprint(f"\n[b]{cardData['name']}[/b] | {cardData['mana_cost']}\n[u]{cardData['type_line']}[/u]\n{cardData['oracle_text']}\n".replace("{T}", "{Tap}"))
+        rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
     
 if __name__ == '__main__':
   fire.Fire()

@@ -18,7 +18,7 @@ A `>` signifies user input
 > python cli.py cardSearch
 
 Please input a search query: > gnoll
-Your search "gnoll" returned 3 card(s):
+Your search "gnoll" returned 3 cards:
 
 #1: Gnoll Hunter
 #2: Targ Nar, Demon-Fang Gnoll

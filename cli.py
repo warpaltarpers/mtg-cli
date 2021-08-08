@@ -22,7 +22,7 @@ def cardSearch():
         print(f"Your search \"{searchQuery}\" returned 1 card:")
         cardPrintout(data['data'][0]['uri'])
     else:
-        print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} card(s):\n")
+        print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} cards:\n")
     
         for i in range(cardsReturned):
             print(f"#{i+1}: {data['data'][i]['name']}")

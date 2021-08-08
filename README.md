@@ -1,8 +1,8 @@
 # Magic the Gathering CLI
-## Command line application for searching the Scryfall database
-### This application is not associated with Wizards of the Coast or Scryfall
+### Command line application for searching the Scryfall database
+#### This application is not associated with Wizards of the Coast or Scryfall
 
-### Usage
+## Usage
 The command starts with `python cli.py`. From there, append one of the following to get to that functionality:
 
 * `cardSearch` - Functions like the standard search on Scryfall (currently limited to card name only and 175 results)
@@ -10,14 +10,14 @@ The command starts with `python cli.py`. From there, append one of the following
 * `fuzzyCard` - Returns a card if the Scryfall server is confident that you unambiguously identified a unique name with your input
 * `randomCard` - Returns a random card
 
-### Examples
+## Examples
 A `>` signifies user input
 
-#### `cardSearch`
+### `cardSearch`
 ```
 > python cli.py cardSearch
 
-Input a search query: > gnoll
+Please input a search query: > gnoll
 Your search "gnoll" returned 3 card(s):
 
 #1: Gnoll Hunter
@@ -32,7 +32,7 @@ Pack tactics — Whenever Targ Nar, Demon-Fang Gnoll attacks, if you attacked wi
 {2}{R}{G}: Double Targ Nar's power and toughness until end of turn.
 ```
 
-#### `exactCard`
+### `exactCard`
 ```
 > python cli.py exactCard
 
@@ -45,13 +45,13 @@ Artifact
 {Tap}: Add one mana of any color that a land an opponent controls could produce.
 ```
 
-#### `fuzzyCard`
+### `fuzzyCard`
 ```
 > python cli.py fuzzyCard
 
 This function only returns a card if the Scryfall server is confident that you unambiguously identified a unique name with your input.
 
-Please input an exact card name: > roar world
+Please input a search query: > roar world
 
 Arahbo, Roar of the World | {3}{G}{W} | 5/5
 Legendary Creature — Cat Avatar
@@ -59,7 +59,7 @@ Eminence — At the beginning of combat on your turn, if Arahbo, Roar of the Wor
 Whenever another Cat you control attacks, you may pay {1}{G}{W}. If you do, it gains trample and gets +X/+X until end of turn, where X is its power.
 ```
 
-#### `randomCard`
+### `randomCard`
 ```
 > python cli.py randomCard
 

@@ -34,15 +34,35 @@ def cardSearch():
 
 # Returns card printout if exact card is matched via the API, otherwise throws an error and restarts.    
 def exactCard():
-    rprint("[b]This function only returns a card when the name is exact (case-insensitive and optional punctuation).\nIt WILL return an error if no card is found.[/b]")
+    rprint("[b]This function only returns a card when the name is exact (case-insensitive and optional punctuation).[/b]")
+    
     searchQuery = input("\nPlease input an exact card name: ")
     searchURL = f"{url}cards/named?exact={searchQuery}".lower().replace(" ", "+")
+    
     try:
         jsonURL = urllib.request.urlopen(searchURL)
     except HTTPError as err:
         if err.code == 404:
             rprint("[b]Card not found, please try again.[/b]\n")
             exactCard()
+    else:
+        data = json.loads(jsonURL.read())
+    
+    cardPrintout(data['uri'])
+    
+# Returns card printout if server is confident you named one card, otherwise throws an error and restarts
+def fuzzyCard():
+    rprint("[b]This function only returns a card if the Scryfall server is confident that you unambiguously identified a unique name with your input.[/b]")
+    
+    searchQuery = input("\nPlease input an exact card name: ")
+    searchURL = f"{url}cards/named?fuzzy={searchQuery}".lower().replace(" ", "+")
+    
+    try:
+        jsonURL = urllib.request.urlopen(searchURL)
+    except HTTPError as err:
+        if err.code == 404:
+            rprint("[b]Either more than 1 one card matched your search, or zero cards matched; please try again.[/b]\n")
+            fuzzyCard()
     else:
         data = json.loads(jsonURL.read())
     

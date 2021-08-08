@@ -5,6 +5,8 @@ from rich import print as rprint
 
 url = "https://api.scryfall.com/"
 
+# Returns list of cards found using a search string
+# Currently only returns first "page" of results (175 cards)
 def cardSearch():
     results = {}
     
@@ -25,6 +27,7 @@ def cardSearch():
     selectedResultURI = results[int(selection) - 1]
     cardPrintout(selectedResultURI)
     
+# Prints out card name, mana cost, type, text, and (if applicable) power and toughness
 def cardPrintout(cardURI):
     jsonURL = urllib.request.urlopen(cardURI)
     data = json.loads(jsonURL.read())

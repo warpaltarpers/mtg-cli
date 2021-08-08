@@ -9,25 +9,24 @@ def cardSearch():
     
     searchQuery = input("Input a search query: ")
     searchURL = f"{url}cards/search?q={searchQuery}"
-    data = json.loads(searchURL.read())
+    jsonURL = urllib.request.urlopen(searchURL)
+    data = json.loads(jsonURL.read())
     
     cardsReturned = len(data['data'])
     
-    if cardsReturned == 1:
-        print(f"Your search \"{searchQuery}\" returned the following card:")
-        # insert card print function here
+    print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} card(s):")
     
-    print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} cards:")
-    
-    for i in cardsReturned:
+    for i in range(cardsReturned):
         print(f"#{i+1}: {data['data'][i]['name']}")
         results[i] = f"{data['data'][i]['uri']}"
         
     selection = input("Choose a card number to see more info about that card: ")
-    cardPrintout(results[selection])
+    selectedResultURI = results[int(selection) - 1]
+    cardPrintout(selectedResultURI)
     
 def cardPrintout(cardURI):
-    data = json.loads(cardURI.read())
+    jsonURL = urllib.request.urlopen(cardURI)
+    data = json.loads(jsonURL.read())
     cardData = {
         "name": f"{data['name']}",
         "mana_cost": f"{data['mana_cost']}",
@@ -36,7 +35,7 @@ def cardPrintout(cardURI):
         "power": f"{data['power']}",
         "toughness": f"{data['toughness']}",
     }
-    print(f"{cardData['name']} | {cardData['mana_cost']}\n{cardData['type_line']}\n{cardData['oracle_text']}")
+    print(f"\n{cardData['name']} | {cardData['mana_cost']} | {cardData['power']}/{cardData['toughness']}\n{cardData['type_line']}\n{cardData['oracle_text']}\n")
     
 if __name__ == '__main__':
   fire.Fire()

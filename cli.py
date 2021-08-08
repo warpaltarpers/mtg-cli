@@ -11,7 +11,7 @@ url = "https://api.scryfall.com/"
 def cardSearch():
     results = {}
     
-    searchQuery = input("Input a search query: ")
+    searchQuery = input("Please input a search query: ")
     searchURL = f"{url}cards/search?q={searchQuery}"
     jsonURL = urllib.request.urlopen(searchURL)
     data = json.loads(jsonURL.read())
@@ -54,7 +54,7 @@ def exactCard():
 def fuzzyCard():
     rprint("[b]This function only returns a card if the Scryfall server is confident that you unambiguously identified a unique name with your input.[/b]")
     
-    searchQuery = input("\nPlease input an exact card name: ")
+    searchQuery = input("\nPlease input a search query: ")
     searchURL = f"{url}cards/named?fuzzy={searchQuery}".lower().replace(" ", "+")
     
     try:

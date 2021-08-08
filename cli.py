@@ -1,6 +1,7 @@
 import fire
 import json
 import urllib.request
+from rich import print as rprint
 
 url = "https://api.scryfall.com/"
 
@@ -35,7 +36,7 @@ def cardPrintout(cardURI):
         "power": f"{data['power']}",
         "toughness": f"{data['toughness']}",
     }
-    print(f"\n{cardData['name']} | {cardData['mana_cost']} | {cardData['power']}/{cardData['toughness']}\n{cardData['type_line']}\n{cardData['oracle_text']}\n")
+    rprint(f"\n[b]{cardData['name']}[/b] | {cardData['mana_cost']} | {cardData['power']}/{cardData['toughness']}\n[u]{cardData['type_line']}[/u]\n{cardData['oracle_text']}\n")
     
 if __name__ == '__main__':
   fire.Fire()

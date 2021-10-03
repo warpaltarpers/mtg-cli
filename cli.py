@@ -26,7 +26,7 @@ def cardSearch():
     
         if cardsReturned == 1:
             print(f"Your search \"{searchQuery}\" returned 1 card:")
-            cardPrintout(data['data'][0]['uri'])
+            setUpPrintout(data['data'][0]['uri'])
         else:
             print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} cards:\n")
         
@@ -36,7 +36,7 @@ def cardSearch():
                 
             selection = input("\nChoose a card number to see more info about that card: ")
             selectedResultURI = results[int(selection) - 1]
-            cardPrintout(selectedResultURI)
+            setUpPrintout(selectedResultURI)
 
 # Returns card printout if exact card is matched via the API, otherwise throws an error and restarts.    
 def exactCard():
@@ -54,7 +54,7 @@ def exactCard():
     else:
         data = json.loads(jsonURL.read())
     
-    cardPrintout(data['uri'])
+    setUpPrintout(data['uri'])
     
 # Returns card printout if server is confident you named one card, otherwise throws an error and restarts
 def fuzzyCard():
@@ -72,40 +72,29 @@ def fuzzyCard():
     else:
         data = json.loads(jsonURL.read())
     
-    cardPrintout(data['uri'])
+    setUpPrintout(data['uri'])
     
 # Returns a random card
 def randomCard():
     searchURL = f"{url}cards/random"
     jsonURL = urllib.request.urlopen(searchURL)
     data = json.loads(jsonURL.read())
-    cardPrintout(data['uri'])
+    setUpPrintout(data['uri'])
     
 # Prints out card name, mana cost, type, text, and (if applicable) power and toughness
-def cardPrintout(cardURI):
+def setUpPrintout(cardURI):
     jsonURL = urllib.request.urlopen(cardURI)
     data = json.loads(jsonURL.read())
-    cardType = cardTypeDeterination(data)
     
     if bool(data.get('card_faces')):
-        twoSidedCard(cardURI)
+        faces = data.get('card_faces')
+    
+        for face in faces:
+            typePrintout(face)
     else:
-        # Creature
-        if cardType == 1:
-            if bool(data.get('power')):
-                rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']} | {data['power']}/{data['toughness']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
-            else: rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Conspiracy, Hero, and Land
-        elif cardType == 3 or cardType == 6 or cardType == 8:
-            rprint(f"\n[b]{data['name']}[/b]\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Artifact, Enchantment, Instant, Sorcery, and Tribal
-        elif cardType == 2 or cardType == 4 or cardType == 5 or cardType == 7 or cardType == 10:
-            rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Planeswalker
-        elif cardType == 8:
-            rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}| {data['loyalty']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        typePrintout(data)
         
-def cardTypeDeterination(cardData):
+def typeDeterination(cardData):
     typeLine = cardData.get('type_line').casefold()
     
     if typeLine.find('creature') != -1:
@@ -130,28 +119,23 @@ def cardTypeDeterination(cardData):
         return 10
     else : rprint("There was an error with the application. Please open up an issue at [b]https://github.com/warpaltarpers/mtg-cli/issues[/b] and include a log of your console in the description.")
     
-def twoSidedCard(cardURI):
-    jsonURL = urllib.request.urlopen(cardURI)
-    data = json.loads(jsonURL.read())
-    faces = data.get('card_faces')
+def typePrintout(card):
+    cardType = typeDeterination(card)
     
-    for face in faces:
-        cardType = cardTypeDeterination(face)
-        # Creature
-        if cardType == 1:
-            if bool(face.get('power')):
-                rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']} | {face['power']}/{face['toughness']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
-            else: rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Conspiracy, Hero, and Land
-        elif cardType == 3 or cardType == 6 or cardType == 8:
-            rprint(f"\n[b]{face['name']}[/b]\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Artifact, Enchantment, Instant, Sorcery, and Tribal
-        elif cardType == 2 or cardType == 4 or cardType == 5 or cardType == 7 or cardType == 10:
-            rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
-        # Planeswalker
-        elif cardType == 8:
-            rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}| {face['loyalty']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
-
-    
+    # Creature
+    if cardType == 1:
+        if bool(card.get('power')):
+            rprint(f"[b]{card['name']}[/b] | {card['mana_cost']} | {card['power']}/{card['toughness']}\n[u]{card['type_line']}[/u]\n{card['oracle_text']}\n".replace("{T}", "{Tap}"))
+        else: rprint(f"[b]{card['name']}[/b] | {card['mana_cost']}\n[u]{card['type_line']}[/u]\n{card['oracle_text']}\n".replace("{T}", "{Tap}"))
+    # Conspiracy, Hero, and Land
+    elif cardType == 3 or cardType == 6 or cardType == 8:
+        rprint(f"[b]{card['name']}[/b]\n[u]{card['type_line']}[/u]\n{card['oracle_text']}\n".replace("{T}", "{Tap}"))
+    # Artifact, Enchantment, Instant, Sorcery, and Tribal
+    elif cardType == 2 or cardType == 4 or cardType == 5 or cardType == 7 or cardType == 10:
+        rprint(f"[b]{card['name']}[/b] | {card['mana_cost']}\n[u]{card['type_line']}[/u]\n{card['oracle_text']}\n".replace("{T}", "{Tap}"))
+    # Planeswalker
+    elif cardType == 9:
+        rprint(f"[b]{card['name']}[/b] | {card['mana_cost']}| {card['loyalty']}\n[u]{card['type_line']}[/u]\n{card['oracle_text']}\n".replace("{T}", "{Tap}"))
+        
 if __name__ == '__main__':
   fire.Fire()

@@ -94,7 +94,7 @@ def setUpPrintout(cardURI):
     else:
         typePrintout(data)
         
-def typeDeterination(cardData):
+def typeDetermination(cardData):
     typeLine = cardData.get('type_line').casefold()
     
     if typeLine.find('creature') != -1:
@@ -120,7 +120,7 @@ def typeDeterination(cardData):
     else : rprint("There was an error with the application. Please open up an issue at [b]https://github.com/warpaltarpers/mtg-cli/issues[/b] and include a log of your console in the description.")
     
 def typePrintout(card):
-    cardType = typeDeterination(card)
+    cardType = typeDetermination(card)
     
     # Creature
     if cardType == 1:

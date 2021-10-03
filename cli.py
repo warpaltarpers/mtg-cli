@@ -85,12 +85,73 @@ def randomCard():
 def cardPrintout(cardURI):
     jsonURL = urllib.request.urlopen(cardURI)
     data = json.loads(jsonURL.read())
-    hasPower = bool(data.get('power'))
+    cardType = cardTypeDeterination(data)
     
-    if hasPower:
-        rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']} | {data['power']}/{data['toughness']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+    if bool(data.get('card_faces')):
+        twoSidedCard(cardURI)
     else:
-        rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Creature
+        if cardType == 1:
+            if bool(data.get('power')):
+                rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']} | {data['power']}/{data['toughness']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+            else: rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Conspiracy, Hero, and Land
+        elif cardType == 3 or cardType == 6 or cardType == 8:
+            rprint(f"\n[b]{data['name']}[/b]\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Artifact, Enchantment, Instant, Sorcery, and Tribal
+        elif cardType == 2 or cardType == 4 or cardType == 5 or cardType == 7 or cardType == 10:
+            rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Planeswalker
+        elif cardType == 8:
+            rprint(f"\n[b]{data['name']}[/b] | {data['mana_cost']}| {data['loyalty']}\n[u]{data['type_line']}[/u]\n{data['oracle_text']}\n".replace("{T}", "{Tap}"))
+        
+def cardTypeDeterination(cardData):
+    typeLine = cardData.get('type_line').casefold()
+    
+    if typeLine.find('creature') != -1:
+        return 1
+    elif typeLine.find('tribal') != -1:
+        return 2
+    elif typeLine.find('conspiracy') != -1:
+        return 3
+    elif typeLine.find('artifact') != -1:
+        return 4
+    elif typeLine.find('enchantment') != -1:
+        return 5
+    elif typeLine.find('hero') != -1:
+        return 6
+    elif typeLine.find('instant') != -1:
+        return 7
+    elif typeLine.find('land') != -1:
+        return 8
+    elif typeLine.find('planeswalker') != -1:
+        return 9
+    elif typeLine.find('sorcery') != -1:
+        return 10
+    else : rprint("There was an error with the application. Please open up an issue at [b]https://github.com/warpaltarpers/mtg-cli/issues[/b] and include a log of your console in the description.")
+    
+def twoSidedCard(cardURI):
+    jsonURL = urllib.request.urlopen(cardURI)
+    data = json.loads(jsonURL.read())
+    faces = data.get('card_faces')
+    
+    for face in faces:
+        cardType = cardTypeDeterination(face)
+        # Creature
+        if cardType == 1:
+            if bool(face.get('power')):
+                rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']} | {face['power']}/{face['toughness']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
+            else: rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Conspiracy, Hero, and Land
+        elif cardType == 3 or cardType == 6 or cardType == 8:
+            rprint(f"\n[b]{face['name']}[/b]\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Artifact, Enchantment, Instant, Sorcery, and Tribal
+        elif cardType == 2 or cardType == 4 or cardType == 5 or cardType == 7 or cardType == 10:
+            rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
+        # Planeswalker
+        elif cardType == 8:
+            rprint(f"\n[b]{face['name']}[/b] | {face['mana_cost']}| {face['loyalty']}\n[u]{face['type_line']}[/u]\n{face['oracle_text']}\n".replace("{T}", "{Tap}"))
+
     
 if __name__ == '__main__':
   fire.Fire()

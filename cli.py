@@ -13,24 +13,30 @@ def cardSearch():
     
     searchQuery = input("Please input a search query: ")
     searchURL = f"{url}cards/search?q={searchQuery}"
-    jsonURL = urllib.request.urlopen(searchURL)
-    data = json.loads(jsonURL.read())
     
-    cardsReturned = len(data['data'])
-    
-    if cardsReturned == 1:
-        print(f"Your search \"{searchQuery}\" returned 1 card:")
-        cardPrintout(data['data'][0]['uri'])
+    try:
+        jsonURL = urllib.request.urlopen(searchURL)
+    except HTTPError as err:
+        if err.code == 404:
+            rprint("[b]Card not found, please try again.[/b]\n")
+            cardSearch()
     else:
-        print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} cards:\n")
+        data = json.loads(jsonURL.read())
+        cardsReturned = len(data['data'])
     
-        for i in range(cardsReturned):
-            print(f"#{i+1}: {data['data'][i]['name']}")
-            results[i] = f"{data['data'][i]['uri']}"
-            
-        selection = input("\nChoose a card number to see more info about that card: ")
-        selectedResultURI = results[int(selection) - 1]
-        cardPrintout(selectedResultURI)
+        if cardsReturned == 1:
+            print(f"Your search \"{searchQuery}\" returned 1 card:")
+            cardPrintout(data['data'][0]['uri'])
+        else:
+            print(f"Your search \"{searchQuery}\" returned {int(cardsReturned)} cards:\n")
+        
+            for i in range(cardsReturned):
+                print(f"#{i+1}: {data['data'][i]['name']}")
+                results[i] = f"{data['data'][i]['uri']}"
+                
+            selection = input("\nChoose a card number to see more info about that card: ")
+            selectedResultURI = results[int(selection) - 1]
+            cardPrintout(selectedResultURI)
 
 # Returns card printout if exact card is matched via the API, otherwise throws an error and restarts.    
 def exactCard():
